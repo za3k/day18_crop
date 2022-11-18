@@ -1,9 +1,34 @@
 /* -- This specific Hack-A-Day project -- */
 
-.preview {
+.display-cont {
+    position: relative;
+    width: fit-content;
+    overflow: hidden;
+    margin: 20px;
+}
+
+.display {
     border: 1px solid;
     width: 200px;
     height: 200px;
+    display: block; /* Fixes slight height misalignment on display-cont */
+    box-sizing: content-box;
+}
+
+.preview {
+    border: 1px solid;
+    margin: 20px;
+    display: block;
+}
+
+.highlight {
+    cursor: move;
+    position: absolute;
+    background-color: #fff;
+    left: 1px;
+    left: 1px;
+    opacity: 0.5;
+    box-shadow: 0 0 0 9999px rgba(0,0,0,0.2);
 }
 
 #uploadContainer {
@@ -46,6 +71,21 @@
     color: #000;
     text-decoration: none;
 }
+
+input[type=number] {
+    height: 36px;
+    width: 80px;
+    text-align: right;
+    padding: 8px 12px 8px 8px;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+    opacity: 1;
+    background: rgba(0,0,0,0);
+    width: 24px;
+    margin-left: 10px;
+}
+
 
 /* Fullscreen 'content' on request */
 .fullscreen nav.navbar {
