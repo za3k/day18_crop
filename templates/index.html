@@ -1,0 +1,29 @@
+{% from 'common.html' import getId,resetId %}
+{% extends 'base.html' %}
+
+{% block header %}
+    <h3>{% block title %}{{ project_name }}{% endblock %}</h3>
+    {{ project_name }} is {{ description }}. {{ instructions | safe }}
+    <script src="{{ url_for("static", filename="index.js") }}"></script>
+    {{ resetId() }}
+{% endblock %}
+
+{% block content %}
+<canvas class="preview"></canvas>
+
+<div>
+    <label for="file">Upload</label>
+    <input type="file" class="file" id="file" />
+</div>
+<div>
+    <label for="scale">Scale</label>
+    <input type="slider" min="0.1" max="10" value="1" name="scale" id="scale" />
+</div>
+<div>
+    <label>Crop to</label>
+    <input type="text" value="100" placeholder="width" id="width">px x <input type="text" value="100" placeholder="height" id="height">px
+</div>
+<div id="uploadContainer">
+    <img id="uploadImage"/>
+<div>
+{% endblock %}

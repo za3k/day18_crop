@@ -1,0 +1,11 @@
+[Unit]
+Description=gunicorn3 for hackaday-18-crop
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/hackaday/day18_crop
+ExecStart=/bin/gunicorn3 -e SCRIPT_NAME=/hackaday/crop --bind 0.0.0.0:8018 app:app
+
+[Install]
+WantedBy=multi-user.target
