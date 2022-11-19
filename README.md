@@ -2,7 +2,7 @@ Hack-A-Day is a project I'm doing in November, where I try to make 30 new projec
 
 # Day 18: Hack-A-Crop
 
-This crops a picture to a fixed size.
+This crops a picture to a fixed size, for thumbnails.
 
 ![Screenshot](screenshot.png)
 
