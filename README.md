@@ -4,7 +4,7 @@ Hack-A-Day is a project I'm doing in November, where I try to make 30 new projec
 
 This crops a picture to a fixed size, for thumbnails.
 
-![Screenshot](screenshot.png)
+[![Screenshot](screenshot.png)](https://tilde.za3k.com/hackaday/crop)
 
 Demo available [here](https://tilde.za3k.com/hackaday/crop).
 
