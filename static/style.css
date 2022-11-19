@@ -31,13 +31,47 @@
     box-shadow: 0 0 0 9999px rgba(0,0,0,0.2);
 }
 
-#uploadContainer {
-    overflow: visible;
-    width: 0px;
-    height: 0px;
+a[disabled=disabled] {
+    color: grey;
 }
-#uploadImage {
-    visibility: hidden;
+
+.hflex {
+    display: flex;
+    flex-direction: row;
+}
+
+.vflex {
+    display: flex;
+    flex-direction: column;
+}
+
+.controls > * {
+    margin-top: 20px;
+}
+
+label {
+    margin-right: 10px;
+}
+.scale {
+    width: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+}
+.scale > span {
+    display: block;
+    text-align: center;
+}
+
+.upload {
+    border: 1px solid;
+    padding: 10px;
+    border-radius: 10px;
+}
+.upload > * {
+    margin: 5px;
+}
+.valign {
+    align-items: center;
 }
 
 /* -- All Hack-A-Day projects -- */

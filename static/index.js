@@ -40,9 +40,9 @@ function makeDraggable(thing, container, onChange) { // Takes two jquery objects
     thing.on("mousedown", (ev) => {
         let shiftX = ev.clientX - thing[0].getBoundingClientRect().left;
         let shiftY = ev.clientY - thing[0].getBoundingClientRect().top;
-        function moveAt(pageX, pageY) {
-            const requestedLeft = pageX - container[0].getBoundingClientRect().left - shiftX
-            const requestedTop = pageY - container[0].getBoundingClientRect().top - shiftY;
+        function moveAt(clientX, clientY) {
+            const requestedLeft = clientX - container[0].getBoundingClientRect().left - shiftX
+            const requestedTop = clientY - container[0].getBoundingClientRect().top - shiftY;
             const limitRight = container.width() - thing.width();
             const limitBottom = container.height() - thing.height();
             const left = Math.min(Math.max(0, requestedLeft), limitRight);
@@ -51,10 +51,10 @@ function makeDraggable(thing, container, onChange) { // Takes two jquery objects
             thing.css("top", `${top}px`);
             onChange();
         }
-        moveAt(ev.pageX, ev.pageY);
+        moveAt(ev.clientX, ev.clientY);
 
         function onMouseMove(ev) {
-            moveAt(ev.pageX, ev.pageY);
+            moveAt(ev.clientX, ev.clientY); // may not be all browsers
         }
         function onMouseUp(ev) {
             $(document).off("mousemove", onMouseMove);
@@ -71,24 +71,32 @@ function makeDraggable(thing, container, onChange) { // Takes two jquery objects
 $(document).ready(() => {
     const display = $(".display");
     const preview = $(".preview");
-    const file_input = $("#file");
-    const scale_input = window.scale = $("#scale");
-    const width = $("#width");
-    const height = $("#height");
+    const save = $("a.save");
     const highlight = $(".highlight");
-    const hiddenImage = window.hiddenImage = $("#uploadImage")[0];
-
+    const width_input = $("#width");
+    const height_input = $("#height");
+    const filename_input = $("#filename");
+    const onlyIf = $(".editing-only");
+    const hiddenImage = new Image();
+    let filename;
     let scale = 1.0;
 
     function setFile(image, scale) {
         const canvas = display[0];
-        canvas.width = image.width*scale; // Make room on the canvas
-        canvas.height = image.height*scale;
-        display.width(canvas.width); // Make room on <canvas>
-        display.height(canvas.height);
         const context = window.context = canvas.getContext('2d');
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+        save.off("click", saveImage);
+        if (image) {
+            canvas.width = image.width*scale; // Make room on the canvas
+            canvas.height = image.height*scale;
+            display.width(canvas.width); // Make room on <canvas>
+            display.height(canvas.height);
+            context.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
+            save.on("click", saveImage);
+            onlyIf.show();
+        } else {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            onlyIf.hide();
+        }
         updatePreview();
     }
     function updatePreview() {
@@ -98,15 +106,24 @@ $(document).ready(() => {
         const top = highlight.css("top").slice(0,-2);
         const width = highlight.width();
         const height = highlight.height();
-        if (display[0].width == 0) context.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-        else context.drawImage(display[0], left, top, width, height, 0, 0, width, height);
+        context.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+        if (display[0].width != 0) context.drawImage(display[0], left, top, width, height, 0, 0, width, height);
+    }
+    function saveImage(ev) {
+        var link = ev.currentTarget;
+        $(link).prop("href", preview[0].toDataURL("image/png"))
+               .prop("download", filename + ".png");
     }
 
-    file_input.change((ev) => {
+    filename_input.on("change", (ev) => {
+        filename = ev.currentTarget.value;
+    });
+    $("#file").change((ev) => {
         const f = ev.target.files[0];
         if (!f) setFile();
         else if (!f.type.startsWith("image/")) setFile();
         else {
+            filename_input[0].value = filename = f.name.split(/(\\|\/)/g).pop().split(".")[0];
             const reader = new FileReader();
             //URL.createObjectURL instead of FileReader?
             reader.onload = (e) => {
@@ -118,30 +135,32 @@ $(document).ready(() => {
             reader.readAsDataURL(f);
         }
     });
+    setFile();
 
-    scale_input.on("input", (ev) => {
-        scale = scale_input[0].trueValue;
+    $("#scale").on("input", (ev) => {
+        scale = ev.currentTarget.trueValue;
         setFile(hiddenImage, scale);
         updatePreview();
     });
-    width.on("change", (ev) => {
-        highlight.width(width[0].value);
-        preview.width(width[0].value);
-        preview[0].width = width[0].value;
+
+    function updateCropSize() {
+        const width = width_input[0].value;
+        const height = height_input[0].value;
+
+        highlight.width(width);
+        preview.width(width);
+        preview[0].width = width;
+
+        highlight.height(height);
+        preview.height(height);
+        preview[0].height = height;
+
         updatePreview();
-    });
-    height.on("change", (ev) => {
-        highlight.height(height[0].value);
-        preview.height(height[0].value);
-        preview[0].height = height[0].value;
-        updatePreview();
-    });
-    highlight.width(width[0].value);
-    highlight.height(height[0].value);
-    preview.width(width[0].value);
-    preview.height(height[0].value);
-    preview[0].width = width[0].value;
-    preview[0].height = height[0].value;
+    }
+    width_input.on("change", updateCropSize);
+    height_input.on("change", updateCropSize);
+    updateCropSize();
+
 
     makeDraggable(highlight, display, updatePreview);
 });

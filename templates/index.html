@@ -9,25 +9,39 @@
 {% endblock %}
 
 {% block content %}
-<div class="display-cont">
+<div class="hflex">
+    <a class="save">
+        <canvas class="preview" id="preview"></canvas>
+    </a>
+    <div class="controls">
+        <div class="hflex">
+            <label for="scale">Scale</label>
+            <div class="scale">
+                <input class="display-range scale-logarithmic" display="scale-display" type="range" min="0.2" max="2" value="1" step="0.1" name="scale" id="scale" />
+                <span><span id="scale-display">1.0</span>x</span>
+            </div>
+        </div>
+        <div>
+            <label>Crop to</label>
+            <input type="number" value="200" min="1" placeholder="width" id="width">px x <input type="number" min="1" value="200" placeholder="height" id="height">px
+        </div>
+        <div class="hflex upload valign">
+            <div class="editing-only">
+                <a type="submit" class="btn btn-primary save" id="save">Save Image</a>
+            </div>
+            <div class="editing-only">
+                <label for="filename">Filename</label>
+                <input class="filename" type="text" name="filename" id="filename" value="" placeholder="first upload a file" />
+            </div>
+            <div>
+                <label for="file">Upload</label>
+                <input type="file" class="file" id="file" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="display-cont editing-only">
     <div class="highlight" id="highlight"></div>
     <canvas class="display"></canvas>
-</div>
-<canvas class="preview" id="preview"></canvas>
-<div>
-    <label for="file">Upload</label>
-    <input type="file" class="file" id="file" />
-</div>
-<div>
-    <label for="scale">Scale</label>
-    <input class="display-range scale-logarithmic" display="scale-display" type="range" min="0.5" max="2" value="1" step="0.1" name="scale" id="scale" />
-    <span id="scale-display">1.0</span>x
-</div>
-<div>
-    <label>Crop to</label>
-    <input type="number" value="200" min="1" placeholder="width" id="width">px x <input type="number" min="1" value="200" placeholder="height" id="height">px
-</div>
-<div id="uploadContainer">
-    <img id="uploadImage"/>
 </div>
 {% endblock %}
